@@ -19,7 +19,7 @@ model = load_model(r'C:\Users\Hardik\Desktop\envflask\Houseimgclassify\house1.h5
 model.make_predict_function()
 
 def model_predict(img_path, model):
-    img = image.load_img(img_path, target_size = (224,224))
+    img = image.load_img(img_path, target_size = (200,200))
 
     x = image.img_to_array(img)
     x = np.expand_dims(x,axis =0)
@@ -32,9 +32,7 @@ def model_predict(img_path, model):
 
 @app.route('/', methods= ['GET'])
 def home():
-    # print (model)
-    return render_template("index.html")
-
+    return "Hello"
 
 @app.route('/predict', methods = ['GET','POST'])
 
@@ -49,12 +47,18 @@ def upload():
 
         preds = model_predict(file_path,model)
 
-        pred_class = decode_predictions(preds, top=1)
-        result = str(pred_class[0][1])
-        return result
+        # pred_class = decode_predictions(preds)
+        result = preds
+        print(result[0][0],"aaaa")
 
-    return None 
-
+        if int(result[0][0])==1:
+            a = "house exterior"
+            return render_template("predict.html",result = a)
+        else:
+            b = "house interior"
+            return render_template("predict.html",result = b)
+    return render_template("predict.html")
+  
 if __name__ == ('__main__'):
     app.run(debug = True)
 
